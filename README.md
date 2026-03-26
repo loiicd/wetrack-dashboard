@@ -1,69 +1,147 @@
 # wetrack-dashboard
 
-TypeScript-Library zum Definieren, Zusammensetzen und Deployen von Dashboard-Konfigurationen.
+> TypeScript SDK for defining Dashboard-as-Code with WeTrack.
 
-## Setup
+[![npm version](https://img.shields.io/npm/v/wetrack-dashboard.svg)](https://www.npmjs.com/package/wetrack-dashboard)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
+## Installation
 
 ```bash
-bun install
+npm install wetrack-dashboard
+# or
+bun add wetrack-dashboard
 ```
 
-## Build (Library Bundle)
+## Quick Start
+
+```typescript
+import { Stack, Dashboard, DataSource, Query, Chart } from "wetrack-dashboard";
+
+export default new Stack("saas-metrics", "PRODUCTION")
+  .addDashboard(
+    new Dashboard("overview", { label: "SaaS Metrics" })
+  )
+  .addDataSource(
+    new DataSource("api", {
+      type: "rest",
+      config: {
+        url: "https://api.example.com/metrics",
+        method: "get",
+        credential: "my-api-key", // references Credential Vault
+      },
+    })
+  )
+  .addQuery(
+    new Query("mrr-data", {
+      type: "jsonpath",
+      dataSource: "api",
+      jsonPath: "$.metrics[*]",
+    })
+  )
+  .addChart(
+    new Chart("mrr-chart", {
+      dashboard: "overview",
+      source: { _entity: "query", key: "mrr-data" },
+      label: "Monthly Recurring Revenue",
+      type: "line",
+      config: { xField: "month", valueFields: ["mrr"] },
+      layout: { x: 0, y: 0, w: 12, h: 3 },
+    })
+  );
+```
+
+## Deploy
+
+```bash
+npx wetrack-cli deploy mystack.ts
+```
+
+## API Reference
+
+Full documentation at [docs.wetrack.dev](https://docs.wetrack.dev/docs/sdk-reference).
+
+### Stack
+
+```typescript
+new Stack(key: string, environment: "PRODUCTION" | "STAGING" | "DEVELOPMENT")
+  .addDashboard(...dashboards)
+  .addDataSource(...sources)
+  .addQuery(...queries)
+  .addChart(...charts)
+  .synthesize() // → JSON
+```
+
+### Dashboard
+
+```typescript
+new Dashboard(key: string, { label: string, description?: string })
+```
+
+### DataSource
+
+```typescript
+new DataSource(key: string, {
+  type: "rest",
+  config: {
+    url: string,
+    method: "get" | "post" | "put",
+    headers?: Record<string, string>,
+    body?: unknown,
+    credential?: string, // Credential Vault label
+  },
+})
+```
+
+### Query
+
+```typescript
+// JSONPath
+new Query(key: string, {
+  type: "jsonpath",
+  dataSource?: string,   // DataSource key
+  sourceQuery?: string,  // another Query key (chaining)
+  jsonPath: string,
+})
+
+// SQL (in-memory, table is always ?)
+new Query(key: string, {
+  type: "sql",
+  dataSource?: string,
+  sourceQuery?: string,
+  sql: string,
+})
+```
+
+### Chart
+
+```typescript
+new Chart(key: string, {
+  dashboard: string,
+  source?: { _entity: "query" | "dataSource", key: string },
+  label: string,
+  type: "bar" | "line" | "stat" | "clock",
+  config: BarConfig | LineConfig | StatConfig | ClockConfig,
+  layout?: { x: number, y: number, w: number, h: number },
+})
+```
+
+## Subpath Exports
+
+```typescript
+import { Stack } from "wetrack-dashboard";
+import { Chart } from "wetrack-dashboard/chart";
+import { stackSchema } from "wetrack-dashboard/schemas";
+```
+
+## Build
 
 ```bash
 bun run build
 ```
 
-Der Build erzeugt in `dist/`:
+Outputs to `dist/`: ESM (`*.mjs`), CJS (`*.cjs`), Types (`*.d.ts`).
 
-- ESM (`*.mjs`)
-- CJS (`*.cjs`)
-- Type Declarations (`*.d.ts`)
+## License
 
-## Verwendung
-
-Root-Import:
-
-```ts
-import { Stack, Dashboard, Query } from "wetrack-dashboard";
-```
-
-Subpath-Import:
-
-```ts
-import { Query } from "wetrack-dashboard/query";
-import { chartSchema } from "wetrack-dashboard/schemas";
-```
-
-## Release-Workflow (npm)
-
-1. Build ausführen:
-
-```bash
-bun run build
-```
-
-2. Paketinhalt prüfen:
-
-```bash
-npm run pack:check
-```
-
-3. Veröffentlichen:
-
-```bash
-npm publish
-```
-
-### Architektur
-
-![Architecture Diagram](./docs/assets/architecture.png)
-
-Die zentrale Abstraktion ist die `Stack`-Klasse, die als Orchestrator und Fluent Builder fungiert:
-
-- **stack.ts** — Haupteinstiegspunkt
-- **chart.ts, dashboard.ts, datasource.ts, query.ts** — Entity-Definitionen
-- **schemas.ts** — Zod Validierungsschemas
-- **types/** — Typ-Definitionen pro Domain
-
-**Datenfluss**: `DataSource` → optional über eine oder mehrere `Query`s → `Chart`. Stack erstellen → Entities hinzufügen (`.addDashboard()`, `.addDataSource()`, `.addQuery()`, `.addChart()`) → `.synthesize()` aufrufen.
+MIT — see [LICENSE](./LICENSE)
