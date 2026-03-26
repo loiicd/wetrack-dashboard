@@ -10,6 +10,7 @@ export const dataSourceSchema = z.object({
     method: z.enum(["get", "post", "put"]),
     headers: z.record(z.string(), z.string()).optional(),
     body: z.unknown().optional(),
+    credential: z.string().optional(),
   }),
 });
 

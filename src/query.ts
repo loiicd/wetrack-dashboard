@@ -1,6 +1,29 @@
 import type { QueryConfig, QueryDefinition } from "./types/query";
 import type { QueryKey } from "./types/keys";
 
+/**
+ * Transforms data from a DataSource or another Query using JSONPath or SQL.
+ * Queries can be chained: use `sourceQuery` to take the output of another
+ * Query as input.
+ *
+ * @example JSONPath query
+ * ```typescript
+ * new Query("revenue", {
+ *   type: "jsonpath",
+ *   dataSource: "api",
+ *   jsonPath: "$.data.revenue[*]"
+ * })
+ * ```
+ *
+ * @example SQL query (in-memory, runs on the result of another query)
+ * ```typescript
+ * new Query("monthly-totals", {
+ *   type: "sql",
+ *   sourceQuery: "revenue",
+ *   sql: "SELECT month, SUM(amount) as total FROM ? GROUP BY month ORDER BY month"
+ * })
+ * ```
+ */
 export class Query {
   readonly _entity = "query" as const;
   key: QueryKey;

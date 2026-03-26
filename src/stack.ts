@@ -4,6 +4,33 @@ import { DataSource } from "./datasource";
 import { Query } from "./query";
 import type { StackDefinition, StackEnvironment } from "./types/stack";
 
+/**
+ * A Stack is the top-level container for a Dashboard-as-Code deployment.
+ * It groups Dashboards, DataSources, Queries, and Charts together and can
+ * be synthesized to JSON and deployed to app.wetrack.dev via the CLI.
+ *
+ * @example
+ * ```typescript
+ * import { Stack, Dashboard, DataSource, Query, Chart } from "wetrack-dashboard";
+ *
+ * export default new Stack("my-stack", "PRODUCTION")
+ *   .addDashboard(new Dashboard("main", { label: "My Dashboard" }))
+ *   .addDataSource(new DataSource("api", {
+ *     type: "rest",
+ *     config: { url: "https://api.example.com/data", method: "get" }
+ *   }))
+ *   .addQuery(new Query("items", {
+ *     type: "jsonpath", dataSource: "api", jsonPath: "$.items[*]"
+ *   }))
+ *   .addChart(new Chart("chart1", {
+ *     dashboard: "main",
+ *     source: { _entity: "query", key: "items" },
+ *     label: "Items",
+ *     type: "bar",
+ *     config: { categoryField: "name", valueFields: ["count"] }
+ *   }));
+ * ```
+ */
 export class Stack {
   key: string;
   environment: StackEnvironment;
