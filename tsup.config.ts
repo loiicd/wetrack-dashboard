@@ -1,10 +1,10 @@
 import { defineConfig } from "tsup";
 
 export default defineConfig({
+  tsconfig: "./tsconfig.build.json",
   entry: {
     index: "src/index.ts",
     chart: "src/chart.ts",
-    connector: "src/connector.ts",
     dashboard: "src/dashboard.ts",
     datasource: "src/datasource.ts",
     query: "src/query.ts",
@@ -12,9 +12,7 @@ export default defineConfig({
     stack: "src/stack.ts",
   },
   format: ["esm", "cjs"],
-  dts: {
-    tsconfig: "./tsconfig.build.json",
-  },
+  dts: true,
   clean: true,
   sourcemap: true,
   target: "es2020",

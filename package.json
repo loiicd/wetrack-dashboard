@@ -17,11 +17,6 @@
       "import": "./dist/chart.mjs",
       "require": "./dist/chart.cjs"
     },
-    "./connector": {
-      "types": "./dist/connector.d.ts",
-      "import": "./dist/connector.mjs",
-      "require": "./dist/connector.cjs"
-    },
     "./dashboard": {
       "types": "./dist/dashboard.d.ts",
       "import": "./dist/dashboard.mjs",
@@ -47,11 +42,6 @@
       "import": "./dist/stack.mjs",
       "require": "./dist/stack.cjs"
     },
-    "./transform": {
-      "types": "./dist/transform.d.ts",
-      "import": "./dist/transform.mjs",
-      "require": "./dist/transform.cjs"
-    },
     "./package.json": "./package.json"
   },
   "files": [
@@ -69,7 +59,6 @@
     "typescript": "^5.9.3"
   },
   "dependencies": {
-    "zod": "^4.3.6",
-    "zod-to-json-schema": "^3.25.1"
+    "zod": "^4.3.6"
   }
 }

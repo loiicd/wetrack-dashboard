@@ -26,10 +26,9 @@ export class Chart {
       query?: string;
       dataSource?: string;
     };
-    // Beim Deserialisieren aus JSON bauen wir den source-Ref manuell
-    // (_entity kann korrekt nicht garantiert werden ohne Registry – daher query bevorzugt)
+    // Beim Deserialisieren aus JSON bauen wir den source-Ref manuell zurück
     const source = query
-      ? ({ _entity: "query", key } as never)
+      ? ({ _entity: "query", key: query } as never)
       : dataSource
         ? ({ _entity: "dataSource", key: dataSource } as never)
         : undefined;

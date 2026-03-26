@@ -54,3 +54,16 @@ npm run pack:check
 ```bash
 npm publish
 ```
+
+### Architektur
+
+![Architecture Diagram](./docs/assets/architecture.png)
+
+Die zentrale Abstraktion ist die `Stack`-Klasse, die als Orchestrator und Fluent Builder fungiert:
+
+- **stack.ts** — Haupteinstiegspunkt
+- **chart.ts, dashboard.ts, datasource.ts, query.ts** — Entity-Definitionen
+- **schemas.ts** — Zod Validierungsschemas
+- **types/** — Typ-Definitionen pro Domain
+
+**Datenfluss**: `DataSource` → optional über eine oder mehrere `Query`s → `Chart`. Stack erstellen → Entities hinzufügen (`.addDashboard()`, `.addDataSource()`, `.addQuery()`, `.addChart()`) → `.synthesize()` aufrufen.
