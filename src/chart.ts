@@ -4,19 +4,34 @@ import type { ChartKey } from "./types/keys";
 /**
  * Defines a chart that renders data on a Dashboard.
  *
- * Supported types: `"bar"` | `"line"` | `"stat"` | `"clock"`
+ * Supported types: `"cartesian"` | `"stat"` | `"clock"`
  *
  * Layout is optional — omit it to use auto-layout, or specify
  * `{ x, y, w, h }` for an explicit position on the 12-column grid.
  *
- * @example Bar chart
+ * @example Cartesian chart (bar series)
  * ```typescript
  * new Chart("revenue-chart", {
  *   dashboard: "main",
  *   source: { _entity: "query", key: "revenue" },
  *   label: "Revenue by Month",
- *   type: "bar",
+ *   type: "cartesian",
  *   config: { categoryField: "month", valueFields: ["amount"] }
+ * })
+ * ```
+ *
+ * @example Cartesian chart (mixed bar + line)
+ * ```typescript
+ * new Chart("revenue-vs-target", {
+ *   dashboard: "main",
+ *   source: { _entity: "query", key: "revenue" },
+ *   label: "Revenue vs. Target",
+ *   type: "cartesian",
+ *   config: {
+ *     categoryField: "month",
+ *     valueFields: ["revenue", "target"],
+ *     seriesTypes: ["bar", "line"],
+ *   }
  * })
  * ```
  *

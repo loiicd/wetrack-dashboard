@@ -54,25 +54,26 @@ const chartLayoutSchema = z.object({
   h: z.number().int().min(1),
 });
 
-const barChartConfigSchema = z.object({
+const cartesianChartConfigSchema = z.object({
+  /** Feldname der Kategorie-Achse */
   categoryField: z.string(),
+  /** Ein oder mehrere Wert-Felder */
   valueFields: z.array(z.string()).min(1),
+  /** Serientyp pro Feld (default: "bar" für alle) */
+  seriesTypes: z
+    .array(z.enum(["bar", "line", "area", "scatter"]))
+    .optional(),
+  /** Ausrichtung für Bar-Serien */
   orientation: z.enum(["vertical", "horizontal"]).default("vertical"),
+  /** Bar-Serien stapeln statt gruppieren */
   stacked: z.boolean().default(false),
-  showLabels: z.boolean().default(false),
-  showTooltip: z.boolean().default(true),
-  colors: z.array(z.string()).optional(),
-  /** Card-Border, -Hintergrund und -Schatten anzeigen (default: true) */
-  showCard: z.boolean().default(true),
-});
-
-const lineChartConfigSchema = z.object({
-  xField: z.string(),
-  valueFields: z.array(z.string()).min(1),
+  /** Datenpunkte bei Line-/Area-Serien markieren */
   showDots: z.boolean().default(true),
-  filled: z.boolean().default(false),
+  /** Tooltip bei Hover anzeigen */
   showTooltip: z.boolean().default(true),
+  /** Achsen-Labels anzeigen */
   showLabels: z.boolean().default(false),
+  /** Farben pro Serie (CSS-Farbe oder var(--...)) */
   colors: z.array(z.string()).optional(),
   /** Card-Border, -Hintergrund und -Schatten anzeigen (default: true) */
   showCard: z.boolean().default(true),
@@ -114,19 +115,8 @@ export const chartSchema = z.discriminatedUnion("type", [
     dataSource: z.string().optional(),
     label: z.string(),
     description: z.string().optional(),
-    type: z.literal("bar"),
-    config: barChartConfigSchema,
-    layout: chartLayoutSchema.optional(),
-  }),
-  z.object({
-    key: z.string(),
-    dashboard: z.string(),
-    query: z.string().optional(),
-    dataSource: z.string().optional(),
-    label: z.string(),
-    description: z.string().optional(),
-    type: z.literal("line"),
-    config: lineChartConfigSchema,
+    type: z.literal("cartesian"),
+    config: cartesianChartConfigSchema,
     layout: chartLayoutSchema.optional(),
   }),
   z.object({

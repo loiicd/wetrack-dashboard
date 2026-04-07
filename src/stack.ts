@@ -26,7 +26,7 @@ import type { StackDefinition, StackEnvironment } from "./types/stack";
  *     dashboard: "main",
  *     source: { _entity: "query", key: "items" },
  *     label: "Items",
- *     type: "bar",
+ *     type: "cartesian",
  *     config: { categoryField: "name", valueFields: ["count"] }
  *   }));
  * ```

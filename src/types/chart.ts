@@ -5,39 +5,26 @@ export type ChartLayout = {
   h: number;
 };
 
-export type BarChartConfig = {
-  /** Feldname der Kategorie-Achse (X bei vertical, Y bei horizontal) */
-  categoryField: string;
-  /** Ein oder mehrere Wert-Felder – ermöglicht gruppierte/gestapelte Bars */
-  valueFields: string[];
-  /** Ausrichtung der Bars: vertical = Balken nach oben, horizontal = nach rechts */
-  orientation: "vertical" | "horizontal";
-  /** Bars stapeln statt gruppieren */
-  stacked?: boolean;
-  /** Wert-Labels direkt an den Bars anzeigen */
-  showLabels?: boolean;
-  /** Tooltip bei Hover anzeigen */
-  showTooltip?: boolean;
-  /** Farben pro Serie (CSS-Farbe oder var(--...)) */
-  colors?: string[];
-  /** Card-Border, -Hintergrund und -Schatten anzeigen (default: true) */
-  showCard?: boolean;
-};
+export type CartesianSeriesType = "bar" | "line" | "area" | "scatter";
 
-export type LineChartConfig = {
-  /** Feldname der X-Achse (Kategorie / Zeit) */
-  xField: string;
-  /** Ein oder mehrere Wert-Felder – eine Linie pro Feld */
+export type CartesianChartConfig = {
+  /** Feldname der Kategorie-Achse */
+  categoryField: string;
+  /** Ein oder mehrere Wert-Felder */
   valueFields: string[];
-  /** Datenpunkte mit Dot markieren */
+  /** Serientyp pro Feld in derselben Reihenfolge wie valueFields (default: "bar" für alle) */
+  seriesTypes?: CartesianSeriesType[];
+  /** Ausrichtung (relevant für Bar-Serien): vertical = Balken nach oben, horizontal = nach rechts */
+  orientation?: "vertical" | "horizontal";
+  /** Bar-Serien stapeln statt gruppieren */
+  stacked?: boolean;
+  /** Datenpunkte bei Line-/Area-Serien markieren */
   showDots?: boolean;
-  /** Fläche unter der Linie füllen */
-  filled?: boolean;
   /** Tooltip bei Hover anzeigen */
   showTooltip?: boolean;
   /** Achsen-Labels anzeigen */
   showLabels?: boolean;
-  /** Farben pro Serie */
+  /** Farben pro Serie (CSS-Farbe oder var(--...)) */
   colors?: string[];
   /** Card-Border, -Hintergrund und -Schatten anzeigen (default: true) */
   showCard?: boolean;
@@ -73,27 +60,15 @@ export type ClockCardConfig = {
   showCard?: boolean;
 };
 
-export type BarChartDefinition = {
+export type CartesianChartDefinition = {
   key: string;
   dashboard: string;
   query?: string;
   dataSource?: string;
   label: string;
   description?: string;
-  type: "bar";
-  config: BarChartConfig;
-  layout?: ChartLayout;
-};
-
-export type LineChartDefinition = {
-  key: string;
-  dashboard: string;
-  query?: string;
-  dataSource?: string;
-  label: string;
-  description?: string;
-  type: "line";
-  config: LineChartConfig;
+  type: "cartesian";
+  config: CartesianChartConfig;
   layout?: ChartLayout;
 };
 
@@ -120,14 +95,12 @@ export type ClockChartDefinition = {
 };
 
 export type ChartDefinition =
-  | BarChartDefinition
-  | LineChartDefinition
+  | CartesianChartDefinition
   | StatChartDefinition
   | ClockChartDefinition;
 
 export type ChartTypeConfig =
-  | { type: "bar"; config: BarChartConfig }
-  | { type: "line"; config: LineChartConfig }
+  | { type: "cartesian"; config: CartesianChartConfig }
   | { type: "stat"; config: StatCardConfig }
   | { type: "clock"; config: ClockCardConfig };
 
