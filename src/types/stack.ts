@@ -1,6 +1,7 @@
 import type { ChartDefinition } from "./chart";
 import type { DataSourceDefinition } from "./datasource";
 import type { DashboardDefinition } from "./dashboard";
+import type { FilterDefinition } from "./filter";
 import type { QueryDefinition } from "./query";
 
 export type StackEnvironment = "PRODUCTION" | "STAGING" | "DEVELOPMENT";
@@ -12,4 +13,5 @@ export type StackDefinition = {
   dataSources?: DataSourceDefinition[];
   queries?: QueryDefinition[];
   charts?: ChartDefinition[];
+  filters?: FilterDefinition[];
 };

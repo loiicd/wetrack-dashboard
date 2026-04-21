@@ -141,6 +141,60 @@ export const chartSchema = z.discriminatedUnion("type", [
   }),
 ]);
 
+// ---- Filter ----
+
+const filterTargetSchema = z.object({
+  type: z.enum(["query", "dataSource"]),
+  key: z.string(),
+  inject: z
+    .object({
+      location: z.enum(["query", "header", "body"]).optional(),
+      name: z.string().optional(),
+    })
+    .optional(),
+});
+
+const selectFilterSchema = z.object({
+  key: z.string(),
+  label: z.string().optional(),
+  type: z.literal("select"),
+  field: z.string(),
+  options: z.array(z.string()),
+  multiple: z.boolean().optional(),
+  targets: z.array(filterTargetSchema).optional(),
+});
+
+const dateRangeFilterSchema = z.object({
+  key: z.string(),
+  label: z.string().optional(),
+  type: z.literal("date_range"),
+  field: z.string(),
+  targets: z.array(filterTargetSchema).optional(),
+});
+
+const stringFilterSchema = z.object({
+  key: z.string(),
+  label: z.string().optional(),
+  type: z.literal("string"),
+  field: z.string(),
+  targets: z.array(filterTargetSchema).optional(),
+});
+
+const numberRangeFilterSchema = z.object({
+  key: z.string(),
+  label: z.string().optional(),
+  type: z.literal("number_range"),
+  field: z.string(),
+  targets: z.array(filterTargetSchema).optional(),
+});
+
+export const filterSchema = z.discriminatedUnion("type", [
+  selectFilterSchema,
+  dateRangeFilterSchema,
+  stringFilterSchema,
+  numberRangeFilterSchema,
+]);
+
 // ---- Stack ----
 
 export const stackSchema = z.object({
@@ -150,6 +204,7 @@ export const stackSchema = z.object({
   dataSources: z.array(dataSourceSchema).optional(),
   queries: z.array(querySchema).optional(),
   charts: z.array(chartSchema).optional(),
+  filters: z.array(filterSchema).optional(),
 });
 
 export type StackSchemaInput = z.input<typeof stackSchema>;

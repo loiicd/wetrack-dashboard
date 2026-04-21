@@ -44,8 +44,8 @@ export default new Stack("saas-metrics", "PRODUCTION")
       dashboard: "overview",
       source: { _entity: "query", key: "mrr-data" },
       label: "Monthly Recurring Revenue",
-      type: "line",
-      config: { xField: "month", valueFields: ["mrr"] },
+      type: "cartesian",
+      config: { categoryField: "month", valueFields: ["mrr"] },
       layout: { x: 0, y: 0, w: 12, h: 3 },
     })
   );
@@ -120,10 +120,20 @@ new Chart(key: string, {
   dashboard: string,
   source?: { _entity: "query" | "dataSource", key: string },
   label: string,
-  type: "bar" | "line" | "stat" | "clock",
-  config: BarConfig | LineConfig | StatConfig | ClockConfig,
+  type: "cartesian" | "stat" | "clock",
+  config: CartesianChartConfig | StatConfig | ClockConfig,
   layout?: { x: number, y: number, w: number, h: number },
 })
+```
+
+#### CartesianChartConfig
+
+```typescript
+{
+  categoryField: string,        // x-axis field
+  valueFields: string[],        // y-axis fields
+  seriesTypes?: ("bar" | "line" | "area" | "scatter")[], // one per valueField (default: "bar")
+}
 ```
 
 ## Subpath Exports

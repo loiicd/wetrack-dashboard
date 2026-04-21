@@ -1,6 +1,7 @@
 import { Chart } from "./chart";
 import { Dashboard } from "./dashboard";
 import { DataSource } from "./datasource";
+import { Filter } from "./filter";
 import { Query } from "./query";
 import type { StackDefinition, StackEnvironment } from "./types/stack";
 
@@ -38,6 +39,7 @@ export class Stack {
   dataSources: DataSource[] = [];
   queries: Query[] = [];
   charts: Chart[] = [];
+  filters: Filter[] = [];
 
   constructor(key: string, environment: StackEnvironment) {
     this.key = key;
@@ -82,6 +84,20 @@ export class Stack {
     return this;
   }
 
+  /**
+   * Add one or more Filters to the Stack.
+   * Filters appear in the Dashboard header and let users interactively
+   * filter chart data at runtime.
+   */
+  addFilter(...filters: Filter[]): this {
+    for (const f of filters) {
+      if (this.filters.some((x) => x.key === f.key))
+        throw new Error(`Duplicate filter key: "${f.key}"`);
+      this.filters.push(f);
+    }
+    return this;
+  }
+
   // ---- Serialisierung ----
 
   synthesize(): StackDefinition {
@@ -92,6 +108,7 @@ export class Stack {
       dataSources: this.dataSources.map((ds) => ds.synthesize()),
       queries: this.queries.map((q) => q.synthesize()),
       charts: this.charts.map((c) => c.synthesize()),
+      filters: this.filters.map((f) => f.synthesize()),
     };
   }
 
@@ -111,6 +128,9 @@ export class Stack {
     }
     for (const c of json.charts ?? []) {
       stack.addChart(Chart.fromJSON(c));
+    }
+    for (const f of json.filters ?? []) {
+      stack.addFilter(Filter.fromJSON(f));
     }
 
     return stack;
